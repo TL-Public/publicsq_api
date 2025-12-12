@@ -1,0 +1,18 @@
+[Unit]
+Description=Question Bank FastAPI Application
+After=network.target
+
+[Service]
+Type=exec
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/var/www/question-bank-api
+Environment=PATH=/var/www/question-bank-api/venv/bin
+EnvironmentFile=/var/www/question-bank-api/.env
+ExecStart=/var/www/question-bank-api/venv/bin/gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --access-logfile /var/log/question-bank-api/access.log --error-logfile /var/log/question-bank-api/error.log
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
